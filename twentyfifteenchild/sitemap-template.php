@@ -21,7 +21,32 @@ the_post();
 			</header><!-- .entry-header -->
 
 			<div class="entry-content">
-				<?php the_content(); ?>
+
+				<?php
+				$query = new WP_Query( array(
+					'post_type'   => array( 'post', 'page' ),
+					'post_status' => 'publish',
+					'orderby'     => 'title menu_order',
+					'order'       => 'ASC',
+					'nopaging'    => true
+				) );
+				?>
+
+				<?php if ( $query->have_posts() ): ?>
+					<ul>
+						<?php while ( $query->have_posts() ): ?>
+							<?php $query->the_post(); ?>
+							<li>
+								<a href="<?php echo esc_url( get_the_permalink( $query->post ) ); ?>">
+									<?php echo esc_html( get_the_title( $query->post ) ); ?>
+								</a>
+							</li>
+						<?php endwhile; ?>
+					</ul>
+				<?php endif; ?>
+
+				<?php wp_reset_postdata(); ?>
+
 			</div><!-- .entry-content -->
 
 			<?php edit_post_link( __( 'Edit', 'twentyfifteen' ), '<footer class="entry-footer"><span class="edit-link">', '</span></footer><!-- .entry-footer -->' ); ?>
